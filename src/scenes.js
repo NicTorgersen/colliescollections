@@ -58,7 +58,7 @@ Crafty.scene('Game', function () {
 // press any key to restart (binding event handler to keydown)
 Crafty.scene('Victory', function () {
     Crafty.e('2D, DOM, Text')
-        .text('All villages visited!')
+        .text('All villages got their stuff!')
         .attr({
             x: 0,
             y: Game.height()/2 - 24,

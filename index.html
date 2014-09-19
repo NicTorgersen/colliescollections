@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Collie's Collections</title>
+    <script src="lib/crafty-min-0.6.2.js" type="text/javascript"></script>
+    <script src="src/game.js" type="text/javascript"></script>
+    <script src="src/components.js" type="text/javascript"></script>
+    <script src="src/scenes.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        // Start the game
+        window.addEventListener('load', Game.start);
+    </script>
+    <style type="text/css">
+    body {
+        background: black;
+        text-align: center;
+        color: #DDD;
+        font-family: Arial;
+    }
+    ul {
+        list-style-type: none;
+        margin: 20px 0 0 0;
+        padding: 0;
+    }
+
+    .controls {
+        color: #BBB;
+    }
+
+    #cr-stage { margin: 20px auto 0; }
+
+    .bottom {
+        font-size: 12px;
+        color: #888;
+        margin-top: 50px;
+    }
+
+    .bottom a {
+        color: #AAA;
+    }
+    </style>
+</head>
+<body>
+    <h2>Collie's Collections</h2>
+
+    <p>Help Collie find all the materials her friends need in each village.</p>
+
+    <p class="controls">Controls: User W, A, S and D or arrow keys to move around.</p>
+    <p class="controls">Smash yourself into things to break them.</p>
+
+    <div id="cr-stage"></div>
+    <div class="status">
+        <div class="pouch">
+            <ul>
+                <li>Rocks: <span id="player-rocks">0</span></li>
+            </ul>
+        </div>
+        <div class="played">
+            <p>You've played for <span id="player-spent-minutes">0</span> minutes and <span id="player-spent-seconds">0</span> seconds.</p>
+        </div>
+    </div>
+    <p class="bottom">Created sort of by Nic.</p>
+</body>
+</html>

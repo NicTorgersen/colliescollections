@@ -1,5 +1,5 @@
 Crafty.scene('Game', function () {
-    Crafty.audio.play('bg_music', -1, 0.2);
+    Crafty.audio.play('bg_music_2', -1, 0.2);
     Crafty.background('rgb(87, 109, 20)');
     this.occupied = new Array(Game.map_grid.width);
 
@@ -140,7 +140,8 @@ Crafty.scene('Loading', function () {
         'assets/candy_dish_lid.ogg',
         'assets/candy_dish_lid.aac',
         'assets/pickup_gem.wav',
-        'assets/background-music/8_bytes_unicorn_kid.mp3'], function () {
+        'assets/background-music/8_bytes_unicorn_kid.mp3',
+        'assets/background-music/8_bit_deadmau5.mp3'], function () {
             Crafty.sprite(16, 'assets/16x16_forest_2.gif', {
                 spr_tree: [0, 0],
                 spr_bush: [1, 0],
@@ -164,8 +165,11 @@ Crafty.scene('Loading', function () {
                 gem: [
                     'assets/pickup_gem.wav'
                 ],
-                bg_music: [
+                bg_music_1: [
                     'assets/background-music/8_bytes_unicorn_kid.mp3'
+                ],
+                bg_music_2: [
+                    'assets/background-music/8_bit_deadmau5.mp3'
                 ]
             });
 

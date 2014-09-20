@@ -1,5 +1,6 @@
 Crafty.scene('Game', function () {
     Crafty.audio.play('bg_music', -1, 0.2);
+    Crafty.background('rgb(87, 109, 20)');
     this.occupied = new Array(Game.map_grid.width);
 
     for (var i = 0; i < Game.map_grid.width; i++) {
@@ -10,8 +11,7 @@ Crafty.scene('Game', function () {
     }
 
     // Place player character, occupy x = 5, y = 5 in grid
-    this.player = Crafty.e('PlayerCharacter').at(5, 5);
-    this.occupied[this.player.at().x][this.player.at().y] = true;
+    this.occupied[5][5] = true;
 
     // Trees, bushes and rocks
     for (var x = 0; x < Game.map_grid.width; x++) {
@@ -22,9 +22,20 @@ Crafty.scene('Game', function () {
             if (at_edge) {
                 Crafty.e('Tree').at(x, y);
                 this.occupied[x][y] = true;
-            } else if (Math.random() < 0.05 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
+            } else if ( Math.random() < 0.1 &&
+                        !this.occupied[x][y] && 
+                        !this.occupied[x+1][y] &&
+                        !this.occupied[x][y+1] &&
+                        !this.occupied[x-1][y] &&
+                        !this.occupied[x][y-1] &&
+                        y != Game.map_grid.height - 1
+            ) {
                 Crafty.e('Bush').at(x, y);
                 this.occupied[x][y] = true;
+                this.occupied[x+1][y] = true;
+                this.occupied[x][y+1] = true;
+                this.occupied[x-1][y] = true;
+                this.occupied[x][y-1]  = true;
             } else if (Math.random() < 0.08 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
                 Crafty.e('Rock').at(x, y);
                 this.occupied[x][y] = true;
@@ -39,7 +50,7 @@ Crafty.scene('Game', function () {
         for (var y = 0; y < Game.map_grid.height; y++) {
             if (Math.random() < 0.02) {
                 if (Crafty('Village').length < max_villages && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
-                    var currVillage = Crafty.e('Village').at(x, y).setCost(Math.ceil(Math.random() *  Crafty('Village').length * 0.85));
+                    var currVillage = Crafty.e('Village').at(x, y);
                     console.log('Generating village: #' + Crafty('Village').length);
 
                     // set the text component (current village cost) to current text component generated
@@ -49,6 +60,8 @@ Crafty.scene('Game', function () {
             }
         }
     }
+
+    this.player = Crafty.e('PlayerCharacter').at(5, 5);
 
     this.show_victory = this.bind('VillageVisited', function () {
         if (!Crafty('Village').length) {
@@ -63,14 +76,15 @@ Crafty.scene('Game', function () {
 
 // press any key to restart (binding event handler to keydown)
 Crafty.scene('Victory', function () {
+    Crafty.background('rgb(229, 201, 134)');
     Crafty.e('2D, DOM, Text')
-        .text('All villages got their stuff!')
+        .text('all villages got their stuff')
         .attr({
             x: 0,
-            y: Game.height() / 2 - 38,
+            y: Game.height() / 2 - 50,
             w: Game.width()
         }).textFont({
-            size: '24px',
+            size: '50px',
             font: 'Arial',
             weight: 'bold'
         })
@@ -92,11 +106,12 @@ Crafty.scene('Victory', function () {
 });
 
 Crafty.scene('Loading', function () {
+    Crafty.background('rgb(53, 117, 144)');
     Crafty.e('2D, DOM, Text')
         .text('Loading game assets...')
         .attr({
             x: 0,
-            y: Game.height() / 2 - 38,
+            y: Game.height() / 2 - 24,
             w: Game.width()
         })
         .textFont({

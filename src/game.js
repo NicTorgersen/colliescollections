@@ -1,19 +1,13 @@
-var uiPouch = {
-    rocks: document.getElementById('player-rocks')
-};
-
 Game = {
     // define size of grid and corresponding tiles
     map_grid: {
-        width: 32,
-        height: 18,
+        width: 48,
+        height: 32,
         tile: {
             width: 16,
             height: 16
         }
     },
-
-    uiPouch: uiPouch,
 
     // total width of game screen
     width: function () {
@@ -25,7 +19,6 @@ Game = {
 
     start: function () {
         Crafty.init(Game.width(), Game.height());
-        Crafty.background('rgb(87, 109, 20)');
 
         // Start game scene
         Crafty.scene('Loading');

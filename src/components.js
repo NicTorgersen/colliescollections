@@ -47,6 +47,12 @@ Crafty.c('Bush', {
     },
 });
 
+Crafty.c('TestPlaceDetection', {
+    init: function () {
+        this.requires('2D, Canvas, Color, Grid');
+    }
+});
+
 Crafty.c('Rock', {
     _hitpoints: 35,
     init: function () {
@@ -173,10 +179,6 @@ Crafty.c('Village', {
     _textComponent: '',
     setTextComponent: function (component) {
         this._textComponent = component;
-        return this;
-    },
-    setCost: function (cost) {
-        this._cost = cost;
         return this;
     },
     init: function () {

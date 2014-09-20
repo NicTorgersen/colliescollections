@@ -1,4 +1,5 @@
 Crafty.scene('Game', function () {
+    Crafty.audio.play('bg_music', -1, 0.5);
     this.occupied = new Array(Game.map_grid.width);
 
     for (var i = 0; i < Game.map_grid.width; i++) {
@@ -49,8 +50,6 @@ Crafty.scene('Game', function () {
         }
     }
 
-    Crafty.audio.play('ring');
-
     this.show_victory = this.bind('VillageVisited', function () {
         if (!Crafty('Village').length) {
             Crafty.scene('Victory');
@@ -68,12 +67,16 @@ Crafty.scene('Victory', function () {
         .text('All villages got their stuff!')
         .attr({
             x: 0,
-            y: Game.height()/2 - 24,
+            y: Game.height() / 2 - 38,
             w: Game.width()
+        }).textFont({
+            size: '24px',
+            font: 'Arial',
+            weight: 'bold'
         })
-        .css($text_css);
+        .textColor('white');
 
-    Crafty.audio.play('applause');
+    Crafty.audio.play('victory');
 
     var delay = true;
     setTimeout(function() { delay = false; }, 2000);
@@ -89,21 +92,18 @@ Crafty.scene('Victory', function () {
 
 Crafty.scene('Loading', function () {
     Crafty.e('2D, DOM, Text')
-        .text('Loading, please wait...')
+        .text('Loading game assets...')
         .attr({
             x: 0,
-            y: Game.height()/2 - 24,
+            y: Game.height() / 2 - 38,
             w: Game.width()
         })
-        .css($text_css);
-
-    // Once the image is loaded...
- 
-    // Define the individual sprites in the image
-    // Each one (spr_tree, etc.) becomes a component
-    // These components' names are prefixed with "spr_"
-    //  to remind us that they simply cause the entity
-    //  to be drawn with a certain sprite
+        .textFont({
+            size: '24px',
+            font: 'Arial',
+            weight: 'bold'
+        })
+        .textColor('white');
 
     Crafty.load([
         'assets/16x16_forest_1.gif',
@@ -111,12 +111,12 @@ Crafty.scene('Loading', function () {
         'assets/door_knock_3x.mp3',
         'assets/door_knock_3x.ogg',
         'assets/door_knock_3x.aac',
-        'assets/board_room_applause.mp3',
-        'assets/board_room_applause.ogg',
-        'assets/board_room_applause.aac',
+        'assets/round_end.wav',
         'assets/candy_dish_lid.mp3',
         'assets/candy_dish_lid.ogg',
-        'assets/candy_dish_lid.aac'], function () {
+        'assets/candy_dish_lid.aac',
+        'assets/pickup_gem.wav',
+        'assets/background-music/8_bytes_unicorn_kid.mp3'], function () {
             Crafty.sprite(16, 'assets/16x16_forest_2.gif', {
                 spr_tree: [0, 0],
                 spr_bush: [1, 0],
@@ -134,19 +134,17 @@ Crafty.scene('Loading', function () {
                     'assets/door_knock_3x.ogg',
                     'assets/door_knock_3x.aac'
                 ],
-                applause: [
-                    'assets/board_room_applause.mp3',
-                    'assets/board_room_applause.ogg',
-                    'assets/board_room_applause.aac'
+                victory: [
+                    'assets/round_end.wav'
                 ],
-                ring: [
-                    'assets/candy_dish_lid.mp3',
-                    'assets/candy_dish_lid.ogg',
-                    'assets/candy_dish_lid.aac'
+                gem: [
+                    'assets/pickup_gem.wav'
+                ],
+                bg_music: [
+                    'assets/background-music/8_bytes_unicorn_kid.mp3'
                 ]
             });
 
-            // When that's done, start game.
             Crafty.scene('Game');
         })
 });

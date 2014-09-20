@@ -56,6 +56,7 @@ Crafty.c('Rock', {
     breakStep: function (pc) {
         if (this._hitpoints == 0) {
             this.destroy();
+            Crafty.audio.play('gem');
             pc.add('rocks', 1);
             var rock_loc = pc.get('rocks') == 1 ? 'rock' : 'rocks';
             console.log('You now have ' + pc.get('rocks') + ' ' + rock_loc + ' on hand.');
@@ -74,7 +75,6 @@ Crafty.c('PlayerCharacter', {
     add: function (item, amount) {
         if (amount > 0) {
             this._pouch[item] += amount;
-
             return this._pouch[item];
         }
         return;

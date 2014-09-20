@@ -31,10 +31,3 @@ Game = {
         Crafty.scene('Loading');
     }
 }
-
-$text_css = {
-    'size': '24px',
-    'family': 'Arial',
-    'color': 'white',
-    'text-align': 'center'
-}

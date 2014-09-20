@@ -1,5 +1,5 @@
 Crafty.scene('Game', function () {
-    Crafty.audio.play('bg_music', -1, 0.5);
+    Crafty.audio.play('bg_music', -1, 0.2);
     this.occupied = new Array(Game.map_grid.width);
 
     for (var i = 0; i < Game.map_grid.width; i++) {
@@ -83,6 +83,7 @@ Crafty.scene('Victory', function () {
 
     this.restart_game = this.bind('KeyDown', function () {
         if (!delay) {
+            Crafty.audio.remove();
             Crafty.scene('Game');
         }
     });

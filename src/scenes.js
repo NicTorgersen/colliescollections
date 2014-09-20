@@ -11,7 +11,8 @@ Crafty.scene('Game', function () {
     }
 
     // Place player character, occupy x = 5, y = 5 in grid
-    this.occupied[5][5] = true;
+    var pPos = {x: Math.ceil(Math.random() * (Game.map_grid.width - 2)), y: Math.ceil(Math.random() * (Game.map_grid.height - 3)) };
+    this.occupied[pPos.x][pPos.y] = true;
 
     // Trees, bushes and rocks
     for (var x = 0; x < Game.map_grid.width; x++) {
@@ -22,12 +23,16 @@ Crafty.scene('Game', function () {
             if (at_edge) {
                 Crafty.e('Tree').at(x, y);
                 this.occupied[x][y] = true;
-            } else if ( Math.random() < 0.1 &&
+            } else if ( Math.random() < 0.3 &&
                         !this.occupied[x][y] && 
                         !this.occupied[x+1][y] &&
                         !this.occupied[x][y+1] &&
                         !this.occupied[x-1][y] &&
                         !this.occupied[x][y-1] &&
+                        !this.occupied[x+1][y+1] &&
+                        !this.occupied[x-1][y+1] &&
+                        !this.occupied[x-1][y-1] &&
+                        !this.occupied[x+1][y-1] &&
                         y != Game.map_grid.height - 1
             ) {
                 Crafty.e('Bush').at(x, y);
@@ -36,7 +41,7 @@ Crafty.scene('Game', function () {
                 this.occupied[x][y+1] = true;
                 this.occupied[x-1][y] = true;
                 this.occupied[x][y-1]  = true;
-            } else if (Math.random() < 0.08 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
+            } else if (Math.random() < 0.09 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
                 Crafty.e('Rock').at(x, y);
                 this.occupied[x][y] = true;
             }
@@ -61,7 +66,10 @@ Crafty.scene('Game', function () {
         }
     }
 
-    this.player = Crafty.e('PlayerCharacter').at(5, 5);
+    this.player = Crafty.e('PlayerCharacter').at(pPos.x, pPos.y);
+
+    console.log(this.player.at().x);
+    console.log(this.player.at().y);
 
     this.show_victory = this.bind('VillageVisited', function () {
         if (!Crafty('Village').length) {

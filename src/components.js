@@ -100,8 +100,8 @@ Crafty.c('PlayerCharacter', {
         this.requires('Actor, Fourway, Collision, spr_player, SpriteAnimation')
             .fourway(1.3)
             .onHit('Rock', this.breakRock)
-            .stopOnSolids()
             .onHit('Village', this.visitVillage)
+            .stopOnSolids()
 
             // These next lines define our four animations
             //  each call to .animate specifies:

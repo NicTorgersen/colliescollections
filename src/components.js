@@ -57,8 +57,9 @@ Crafty.c('Rock', {
         if (this._hitpoints == 0) {
             this.destroy();
             pc.add('rocks', 1);
-            var rock_loc = pc._rocks == 1 ? 'rock' : 'rocks';
-            console.log('You now have ' + pc._rocks + ' ' + rock_loc + ' on hand.');
+            var rock_loc = pc.get('rocks') == 1 ? 'rock' : 'rocks';
+            console.log('You now have ' + pc.get('rocks') + ' ' + rock_loc + ' on hand.');
+            return this;
         }
         this._hitpoints--;
         return this;
@@ -67,23 +68,26 @@ Crafty.c('Rock', {
 
 Crafty.c('PlayerCharacter', {
     // currency
-    _rocks: 0,
     _pouch: {
         'rocks': 0
     },
     add: function (item, amount) {
         if (amount > 0) {
-            this._rocks +=amount;
-            return this._rocks;
+            this._pouch[item] += amount;
+
+            return this._pouch[item];
         }
         return;
     },
     deplete: function (item, amount) {
-        if (amount <= this._rocks) {
-            this._rocks -= amount;
-            return this._rocks;
+        if (amount <= this._pouch[item]) {
+            this._pouch[item] -= amount;
+            return this._pouch[item];
         }
         return;
+    },
+    get: function (item) {
+        return this._pouch[item];
     },
 
     init: function () {
@@ -155,23 +159,37 @@ Crafty.c('PlayerCharacter', {
     }
 });
 
+Crafty.c('VillageText', {
+    init: function () {
+        this.requires('2D, DOM, Text, Grid');
+    },
+    villageDestroy: function () {
+        this.destroy();
+    }
+})
+
 Crafty.c('Village', {
     _cost: 0,
+    _textComponent: '',
+    setTextComponent: function (component) {
+        this._textComponent = component;
+        return this;
+    },
     init: function () {
         this.requires('Actor, spr_village');
         this._cost = Math.ceil(Math.random() * 10);
+        return this;
     },
 
     visit: function (pc) {
-        var rock_loc = this._cost == 1 ? 'rock' : 'rocks';
-
-        if (pc._rocks >= this._cost) {
+        if (pc.get('rocks') >= this._cost) {
             this.destroy();
+            this._textComponent.villageDestroy();
             Crafty.audio.play('knock');
             Crafty.trigger('VillageVisited', this);
 
             pc.deplete('rocks', this._cost);
-            console.log('You now have ' + pc._rocks + ' rocks on hand.');
+            console.log('You now have ' + pc.get('rocks') + ' rocks on hand.');
             return this;
         } else {
             console.log('This village needs ' + this._cost + ' ' + rock_loc + '.');

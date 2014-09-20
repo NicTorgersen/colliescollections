@@ -15,15 +15,15 @@ Crafty.scene('Game', function () {
     for (var x = 0; x < Game.map_grid.width; x++) {
         for (var y = 0; y < Game.map_grid.height; y++) {
             var at_edge = x == 0 || x == Game.map_grid.width - 1 ||
-                          y == 0 || y == Game.map_grid.height - 1;
+                          y == 0 || y == Game.map_grid.height - 2;
 
             if (at_edge) {
                 Crafty.e('Tree').at(x, y);
                 this.occupied[x][y] = true;
-            } else if (Math.random() < 0.06 && !this.occupied[x][y]) {
+            } else if (Math.random() < 0.06 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
                 Crafty.e('Bush').at(x, y);
                 this.occupied[x][y] = true;
-            } else if (Math.random() < 0.09 && !this.occupied[x][y]) {
+            } else if (Math.random() < 0.09 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
                 Crafty.e('Rock').at(x, y);
                 this.occupied[x][y] = true;
             }
@@ -34,9 +34,13 @@ Crafty.scene('Game', function () {
     for (var x = 0; x < Game.map_grid.width; x++) {
         for (var y = 0; y < Game.map_grid.height; y++) {
             if (Math.random() < 0.02) {
-                if (Crafty('Village').length < max_villages && !this.occupied[x][y]) {
-                    Crafty.e('Village').at(x, y);
+                if (Crafty('Village').length < max_villages && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
+                    var currVillage = Crafty.e('Village').at(x, y);
                     console.log('Generating village: #' + Crafty('Village').length);
+
+                    // set the text component (current village cost) to current text component generated
+                    var currVillageText = Crafty.e('VillageText').at(x, y - 1).text(currVillage._cost);
+                    currVillage.setTextComponent(currVillageText);
                 }
             }
         }

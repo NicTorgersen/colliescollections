@@ -175,9 +175,13 @@ Crafty.c('Village', {
         this._textComponent = component;
         return this;
     },
+    setCost: function (cost) {
+        this._cost = cost;
+        return this;
+    },
     init: function () {
         this.requires('Actor, spr_village');
-        this._cost = Math.ceil(Math.random() * 10);
+        this._cost = Math.ceil(Math.random() * 4) + 2;
         return this;
     },
 
@@ -192,7 +196,6 @@ Crafty.c('Village', {
             console.log('You now have ' + pc.get('rocks') + ' rocks on hand.');
             return this;
         } else {
-            console.log('This village needs ' + this._cost + ' ' + rock_loc + '.');
             return this;
         }
     }

@@ -12,6 +12,7 @@ Crafty.scene('Game', function () {
     this.player = Crafty.e('PlayerCharacter').at(5, 5);
     this.occupied[this.player.at().x][this.player.at().y] = true;
 
+    // Trees, bushes and rocks
     for (var x = 0; x < Game.map_grid.width; x++) {
         for (var y = 0; y < Game.map_grid.height; y++) {
             var at_edge = x == 0 || x == Game.map_grid.width - 1 ||
@@ -20,22 +21,24 @@ Crafty.scene('Game', function () {
             if (at_edge) {
                 Crafty.e('Tree').at(x, y);
                 this.occupied[x][y] = true;
-            } else if (Math.random() < 0.06 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
+            } else if (Math.random() < 0.05 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
                 Crafty.e('Bush').at(x, y);
                 this.occupied[x][y] = true;
-            } else if (Math.random() < 0.09 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
+            } else if (Math.random() < 0.08 && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
                 Crafty.e('Rock').at(x, y);
                 this.occupied[x][y] = true;
             }
         }
     }
+    console.log('Made ' + Crafty('Rock').length + ' rocks.');
 
-    var max_villages = Game.map_grid.width + Game.map_grid.height;
+    // Villages
+    var max_villages = Crafty('Rock').length / 4;
     for (var x = 0; x < Game.map_grid.width; x++) {
         for (var y = 0; y < Game.map_grid.height; y++) {
             if (Math.random() < 0.02) {
                 if (Crafty('Village').length < max_villages && !this.occupied[x][y] && y != Game.map_grid.height - 1) {
-                    var currVillage = Crafty.e('Village').at(x, y);
+                    var currVillage = Crafty.e('Village').at(x, y).setCost(Math.ceil(Math.random() *  Crafty('Village').length * 0.85));
                     console.log('Generating village: #' + Crafty('Village').length);
 
                     // set the text component (current village cost) to current text component generated

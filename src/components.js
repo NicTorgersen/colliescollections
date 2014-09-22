@@ -42,9 +42,25 @@ Crafty.c('Tree', {
 });
 
 Crafty.c('Bush', {
+    _hitpoints: 40,
     init: function () {
         this.requires('Actor, Solid, spr_bush');
     },
+
+    breakStep: function (pc) {
+        if (pc.getTool('Reg Axe')) {
+            if (this._hitpoints == 0) {
+                this.destroy();
+                Crafty.audio.play('gem');
+                pc.add('wood', 1);
+                return this;
+            }
+            this._hitpoints--;
+            return this;
+        } else {
+            console.log('You need an axe to perform this action...');
+        }
+    }
 });
 
 Crafty.c('TestPlaceDetection', {
@@ -71,12 +87,51 @@ Crafty.c('Rock', {
         this._hitpoints--;
         return this;
     }
-})
+});
+
+Crafty.c('reg_Axe', {
+    _textComponent: '',
+    _toolName: 'Reg Axe',
+    setTextComponent: function (component) {
+        this._textComponent = component;
+        return this;
+    },
+    setToolName: function (newName) {
+        var oldToolName = this._toolName;
+        this._toolName = newName;
+        return {
+            oldName: oldToolName,
+            newName: newName
+        }
+    },
+    getToolTextComponent: function () {
+        return this._textComponent;
+    },
+
+    init: function () {
+        this.requires('Actor, spr_reg_axe');
+    },
+});
 
 Crafty.c('PlayerCharacter', {
     // currency
     _pouch: {
-        'rocks': 0
+        'rocks': 0,
+        'wood': 0,
+        'tools': []
+    },
+    giveTool: function (tool) {
+        if (tool) {
+            this._pouch.tools.push(tool);
+        }
+    },
+    getTool: function (toolToSearch) {
+        for (tool in this._pouch.tools) {
+            if (this._pouch.tools[tool] == toolToSearch) {
+                return true;
+            }
+        };
+        return false;
     },
     add: function (item, amount) {
         if (amount > 0) {
@@ -101,6 +156,7 @@ Crafty.c('PlayerCharacter', {
             .fourway(1.3)
             .onHit('Rock', this.breakRock)
             .onHit('Village', this.visitVillage)
+            .onHit('Bush', this.breakWood)
             .stopOnSolids()
 
             // These next lines define our four animations
@@ -162,25 +218,31 @@ Crafty.c('PlayerCharacter', {
         rock = data[0].obj;
         this.stopMovement();
         rock.breakStep(this);
+    },
+
+    breakWood: function (data) {
+        bush = data[0].obj;
+        this.stopMovement();
+        bush.breakStep(this);
     }
 });
 
 Crafty.c('VillageText', {
     init: function () {
         this.requires('2D, DOM, Text, Grid');
-    },
-    villageDestroy: function () {
-        this.destroy();
     }
-})
+});
+
+Crafty.c('ToolText', {
+    init: function () {
+        this.requires('2D, DOM, Text, Grid');
+    }
+});
 
 Crafty.c('Village', {
     _cost: 0,
     _textComponent: '',
-    setTextComponent: function (component) {
-        this._textComponent = component;
-        return this;
-    },
+    _toolComponent: '',
     init: function () {
         this.requires('Actor, spr_village');
         this._cost = Math.ceil(Math.random() * 4) + 2;
@@ -189,16 +251,34 @@ Crafty.c('Village', {
 
     visit: function (pc) {
         if (pc.get('rocks') >= this._cost) {
+            if (this._toolComponent != '') {
+                pc.giveTool(this._toolComponent._toolName);
+                console.log(this);
+                this.destroyTools();
+            }
+            this._textComponent.destroy();
             this.destroy();
-            this._textComponent.villageDestroy();
             Crafty.audio.play('knock');
             Crafty.trigger('VillageVisited', this);
-
             pc.deplete('rocks', this._cost);
             console.log('You now have ' + pc.get('rocks') + ' rocks on hand.');
+            console.log(pc.getTool('Reg Axe'));
             return this;
         } else {
             return this;
         }
-    }
+    },
+    setTextComponent: function (component) {
+        this._textComponent = component;
+        return this;
+    },
+    setToolComponent: function (component) {
+        this._toolComponent = component;
+        return this;
+    },
+    destroyTools: function () {
+        this._toolComponent.getToolTextComponent().destroy();
+        this._toolComponent.destroy();
+        return this;
+    },
 })

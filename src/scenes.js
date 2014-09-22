@@ -3,6 +3,8 @@ Crafty.scene('Game', function () {
     Crafty.background('rgb(87, 109, 20)');
     this.occupied = new Array(Game.map_grid.width);
 
+    var rockCounter = Crafty.e('PlayerRockCount').at()
+
     for (var i = 0; i < Game.map_grid.width; i++) {
         this.occupied[i] = new Array(Game.map_grid.height);
         for (var y = 0; y < Game.map_grid.height; y++) {
@@ -51,7 +53,9 @@ Crafty.scene('Game', function () {
 
     // Villages
     var max_villages = Crafty('Rock').length / 4;
-    var max_tools    = 2;
+    var max_tools    = {
+        reg_Axe: 1
+    };
     for (var x = 0; x < Game.map_grid.width; x++) {
         for (var y = 0; y < Game.map_grid.height; y++) {
             if (Math.random() < 0.02) {
@@ -67,20 +71,20 @@ Crafty.scene('Game', function () {
                         if (!array[x-1][y]) {
                             return { x: x-1, y: y };
                         }
-                        if (!array[x][y+1]) {
+                        /*if (!array[x][y+1]) {
                             return { x: x, y: y+1 };
                         }
                         if (!array[x][y-1]) {
                             return { x: x, y: y-1 };
-                        }
+                        }*/
                         return false;
                     };
-                    if (Crafty('reg_Axe').length < max_tools &&
-                        Math.random() < 0.1 &&
-                        !this.occupied[x+1][y] ||
-                        !this.occupied[x][y+1] ||
+                    if ((Crafty('reg_Axe').length < max_tools['reg_Axe'] &&
+                        currVillage._cost > 4) &&
+                        (!this.occupied[x+1][y] ||
+                        !this.occupied[x][y+1]) /*||
                         !this.occupied[x-1][y] ||
-                        !this.occupied[x][y-1]) {
+                        !this.occupied[x][y-1]*/) {
                         var nonOccupieds = returnNonOccupied(x, y, this.occupied);
 
                         if (nonOccupieds != false) {

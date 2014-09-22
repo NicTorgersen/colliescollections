@@ -227,6 +227,18 @@ Crafty.c('PlayerCharacter', {
     }
 });
 
+Crafty.c('PlayerRockCount', {
+    _rocks: 0,
+    init: function () {
+        this.requires('2D, DOM, Text, Grid, spr_rock');
+        this.text(this._rocks);
+    },
+    updateRockCount: function () {
+        _rocks++;
+        return this;
+    }
+});
+
 Crafty.c('VillageText', {
     init: function () {
         this.requires('2D, DOM, Text, Grid');

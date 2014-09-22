@@ -1,9 +1,7 @@
 Crafty.scene('Game', function () {
-    Crafty.audio.play('bg_music_2', -1, 0.2);
+    //Crafty.audio.play('bg_music_2', -1, 0.2);
     Crafty.background('rgb(87, 109, 20)');
     this.occupied = new Array(Game.map_grid.width);
-
-    var rockCounter = Crafty.e('PlayerRockCount').at()
 
     for (var i = 0; i < Game.map_grid.width; i++) {
         this.occupied[i] = new Array(Game.map_grid.height);
@@ -112,12 +110,18 @@ Crafty.scene('Game', function () {
     console.log(this.player.at().x);
     console.log(this.player.at().y);
 
+    this.rockCounter = Crafty.e('PlayerRockCount').at(1, Game.map_grid.height - 1);
+    this.update_rock_count = this.bind('RocksChanged', function (pc) {
+        this.rockCounter.updateRockCount(pc);
+    });
+
     this.show_victory = this.bind('VillageVisited', function () {
         if (!Crafty('Village').length) {
             Crafty.scene('Victory');
         }
     });
 }, function () {
+    this.unbind('RocksChanged', this.rockCounter);
     this.unbind('VillageVisited', this.show_victory);
 });
 
@@ -182,6 +186,8 @@ Crafty.scene('Loading', function () {
         'assets/candy_dish_lid.ogg',
         'assets/candy_dish_lid.aac',
         'assets/pickup_gem.wav',
+        'assets/pickup_axe.wav',
+        'assets/pickup_axe.mp3',
         'assets/background-music/8_bytes_unicorn_kid.mp3',
         'assets/background-music/8_bit_deadmau5.mp3'], function () {
             Crafty.sprite(16, 'assets/16x16_forest_2.gif', {
@@ -210,6 +216,10 @@ Crafty.scene('Loading', function () {
                 ],
                 gem: [
                     'assets/pickup_gem.wav'
+                ],
+                axe: [
+                    'assets/pickup_axe.wav',
+                    'assets/pickup_axe.mp3'
                 ],
                 bg_music_1: [
                     'assets/background-music/8_bytes_unicorn_kid.mp3'

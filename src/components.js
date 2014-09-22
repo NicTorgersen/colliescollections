@@ -51,7 +51,7 @@ Crafty.c('Bush', {
         if (pc.getTool('Reg Axe')) {
             if (this._hitpoints == 0) {
                 this.destroy();
-                Crafty.audio.play('gem');
+                Crafty.audio.play('axe', 1, 1);
                 pc.add('wood', 1);
                 return this;
             }
@@ -80,8 +80,7 @@ Crafty.c('Rock', {
             this.destroy();
             Crafty.audio.play('gem');
             pc.add('rocks', 1);
-            var rock_loc = pc.get('rocks') == 1 ? 'rock' : 'rocks';
-            console.log('You now have ' + pc.get('rocks') + ' ' + rock_loc + ' on hand.');
+            Crafty.trigger('RocksChanged', pc);
             return this;
         }
         this._hitpoints--;
@@ -124,6 +123,7 @@ Crafty.c('PlayerCharacter', {
         if (tool) {
             this._pouch.tools.push(tool);
         }
+        return this;
     },
     getTool: function (toolToSearch) {
         for (tool in this._pouch.tools) {
@@ -149,6 +149,9 @@ Crafty.c('PlayerCharacter', {
     },
     get: function (item) {
         return this._pouch[item];
+    },
+    getFunds: function (options) {
+        return this._pouch['rocks'] + this._pouch['wood'];
     },
 
     init: function () {
@@ -226,15 +229,12 @@ Crafty.c('PlayerCharacter', {
         bush.breakStep(this);
     }
 });
-
 Crafty.c('PlayerRockCount', {
-    _rocks: 0,
     init: function () {
         this.requires('2D, DOM, Text, Grid, spr_rock');
-        this.text(this._rocks);
     },
-    updateRockCount: function () {
-        _rocks++;
+    updateRockCount: function (pc) {
+        this.text(pc.get('rocks'));
         return this;
     }
 });
@@ -262,19 +262,28 @@ Crafty.c('Village', {
     },
 
     visit: function (pc) {
-        if (pc.get('rocks') >= this._cost) {
+        if (pc.getFunds() >= this._cost) {
             if (this._toolComponent != '') {
                 pc.giveTool(this._toolComponent._toolName);
-                console.log(this);
                 this.destroyTools();
+                Crafty.audio.play('axe', 1, 1);
+            } else {
+                Crafty.audio.play('knock');
             }
             this._textComponent.destroy();
             this.destroy();
-            Crafty.audio.play('knock');
             Crafty.trigger('VillageVisited', this);
+            if (pc.get('rocks') < pc.get('wood') && pc.get('rocks') > 0) {
+                var newPrice = (this._cost < pc.get('rocks')) ? pc.get('rocks') - this._cost : this._cost - pc.get('rocks');
+                pc.deplete('rocks', pc.get('rocks'));
+                if (!newPrice <= 0) {
+                    pc.deplete('wood', newPrice);
+                }
+            } else if (pc.get('rocks') == 0 && pc.get('wood') > 0) {
+                pc.deplete('wood', this._cost);
+            }
             pc.deplete('rocks', this._cost);
-            console.log('You now have ' + pc.get('rocks') + ' rocks on hand.');
-            console.log(pc.getTool('Reg Axe'));
+            Crafty.trigger('RocksChanged', pc);
             return this;
         } else {
             return this;
